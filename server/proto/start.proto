@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package go.micro.srv.send;
+
+service Start {
+	rpc SendMessage(CallRequest) returns (CallResponse) {}
+}
+
+message CallRequest {
+	string name = 1;
+}
+
+message CallResponse {
+	string msg = 1;
+}
