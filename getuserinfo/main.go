@@ -37,7 +37,7 @@ func (u *UserInfo) GetInfo(ctx context.Context, req *pb.GetRequest, rsp *pb.GetR
 }
 
 func main() {
-	sentinel.InitSentinel()
+	sentinel.InitSentinelCircuitBreaking()
 	cr := consul.NewRegistry(registry.Addrs("47.115.20.3:8500"))
 	service := micro.NewService(
 		micro.Name("go.micro.srv.getuserinfo"),

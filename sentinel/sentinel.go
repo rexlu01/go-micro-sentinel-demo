@@ -6,6 +6,7 @@ import (
 
 	sentinel_api "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
+	"github.com/alibaba/sentinel-golang/core/circuitbreaker"
 	"github.com/alibaba/sentinel-golang/core/flow"
 	"github.com/micro/go-micro/errors"
 	"github.com/micro/go-micro/server"
@@ -28,6 +29,28 @@ func InitSentinel() {
 			ControlBehavior:  flow.Reject,
 			Threshold:        1000,
 			StatIntervalInMs: 1000,
+		},
+	})
+	if err != nil {
+		log.Fatalf("Unexpected error: %+v", err)
+		return
+	}
+}
+
+func InitSentinelCircuitBreaking() {
+	err := sentinel_api.InitDefault()
+	if err != nil {
+		log.Fatalf("Unexpected error: %+v", err)
+	}
+	_, err = circuitbreaker.LoadRules([]*circuitbreaker.Rule{
+		// Statistic time span=5s, recoveryTimeout=3s, maxErrorRatio=40%
+		{
+			Resource:         "abc",
+			Strategy:         circuitbreaker.ErrorRatio,
+			RetryTimeoutMs:   3000,
+			MinRequestAmount: 10,
+			StatIntervalMs:   5000,
+			Threshold:        0.4,
 		},
 	})
 	if err != nil {
