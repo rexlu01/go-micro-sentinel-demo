@@ -11,3 +11,7 @@
 protoc --proto_path=. --go_out=. --micro_out=. */*.proto
 带引用：
 protoc --proto_path=${GOPATH}/src:. --go_out=. --micro_out=. api/api.proto 
+
+
+### micro api 命令
+micro api --handler=api
