@@ -6,3 +6,8 @@
 * sentinel
 * consul
 
+### --------------------------------------生成接口文件--------------------------------------
+普通：
+protoc --proto_path=. --go_out=. --micro_out=. */*.proto
+带引用：
+protoc --proto_path=${GOPATH}/src:. --go_out=. --micro_out=. api/api.proto 

@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"log"
+	pb "micro-sentinel/server/proto"
 	"time"
-	pb "twomicroexercise/03/server/proto"
 
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-plugins/registry/consul"
@@ -21,11 +21,6 @@ func (g *Start) SendMessage(ctx context.Context, req *pb.CallRequest, rsp *pb.Ca
 
 func main() {
 	cr := consul.NewRegistry(registry.Addrs("47.115.20.3:8500"))
-	// cr := consul.NewRegistry(func(op *registry.Options) {
-	// 	op.Addrs = []string{
-	// 		"47.115.20.3:8500",
-	// 	}
-	// })
 	service := micro.NewService(
 		micro.Name("go.micro.srv.send"),
 		micro.RegisterTTL(time.Second*3),

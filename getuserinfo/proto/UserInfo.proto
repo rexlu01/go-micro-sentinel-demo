@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package go.micro.srv.getuserinfo;
+
+service UserInfo{
+    rpc GetInfo(GetRequest) returns (GetResponse) {}
+}
+
+message GetRequest {
+    string username =1;
+}
+
+message GetResponse {
+    string msg = 1;
+}

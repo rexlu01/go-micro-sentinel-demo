@@ -4,7 +4,8 @@ import (
 	"context"
 	"log"
 	"time"
-	pb "twomicroexercise/03/server/proto"
+
+	pb "micro-sentinel/getuserinfo/proto"
 
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
@@ -14,25 +15,26 @@ import (
 	"github.com/micro/go-plugins/registry/consul"
 )
 
-type Start struct{}
+type UserInfo struct {
+}
 
 var (
-	cl pb.StartService
+	cl pb.UserInfoService
 )
 
-func (g *Start) Anything(c *gin.Context) {
+func (g *UserInfo) Anything(c *gin.Context) {
 	log.Print("Received Say.Anything API request")
 	c.JSON(200, map[string]string{
 		"message": "Hi, this is the Greeter API",
 	})
 }
 
-func (g *Start) SendMessage(c *gin.Context) {
+func (g *UserInfo) GetInfo(c *gin.Context) {
 	log.Print("Received Say.Hello API request")
 	name := c.Param("name")
 
-	response, err := cl.SendMessage(context.TODO(), &pb.CallRequest{
-		Name: name,
+	response, err := cl.GetInfo(context.TODO(), &pb.GetRequest{
+		Username: name,
 	})
 
 	if err != nil {
@@ -53,13 +55,13 @@ func main() {
 
 	service.Init()
 
-	cl = pb.NewStartService("go.micro.srv.send", client.DefaultClient)
+	cl = pb.NewUserInfoService("go.micro.srv.getuserinfo", client.DefaultClient)
 
-	start := new(Start)
+	start := new(UserInfo)
 
 	router := gin.Default()
 	router.GET("/sendmessage", start.Anything)
-	router.GET("/sendmessage/:name", start.SendMessage)
+	router.GET("/sendmessage/:name", start.GetInfo)
 
 	service.Handle("/", router)
 
