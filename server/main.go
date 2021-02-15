@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
+	pb "go-micro-sentinel/server/proto"
 	"log"
-	pb "micro-sentinel/server/proto"
 	"time"
 
 	"github.com/micro/go-micro/registry"
