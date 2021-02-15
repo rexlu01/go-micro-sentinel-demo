@@ -6,8 +6,7 @@ import (
 	pb "go-micro-sentinel/getuserinfo/proto"
 	start "go-micro-sentinel/server/proto"
 
-
-	sentinel "go-micro-sentinel/sentinal"
+	sentinel "go-micro-sentinel/sentinel"
 
 	"log"
 	"time"

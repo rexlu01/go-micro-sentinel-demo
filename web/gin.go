@@ -7,8 +7,6 @@ import (
 
 	pb "go-micro-sentinel/getuserinfo/proto"
 
-	sentinel "go-micro-sentinel/sentinal"
-
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/web"
@@ -47,14 +45,13 @@ func (g *UserInfo) GetInfo(c *gin.Context) {
 }
 
 func main() {
-	sentinel.InitSentinel()
+
 	cr := consul.NewRegistry(registry.Addrs("47.115.20.3:8500"))
 	service := web.NewService(
 		web.Name("go.micro.api.sendmessage"),
 		web.Registry(cr),
 		web.RegisterTTL(time.Second*3),
 		web.RegisterInterval(time.Second*3),
-		web.WrapHandler(sentinel.NewSentinelHandlerWrapper()),
 	)
 
 	service.Init()
