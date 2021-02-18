@@ -6,10 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/micro/go-micro/registry"
-	"github.com/micro/go-plugins/registry/consul"
-
-	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-plugins/registry/consul/v2"
 )
 
 type Start struct{}
@@ -20,7 +19,10 @@ func (g *Start) SendMessage(ctx context.Context, req *pb.CallRequest, rsp *pb.Ca
 }
 
 func main() {
-	cr := consul.NewRegistry(registry.Addrs("47.115.20.3:8500"))
+	url := []string{"47.115.20.3:8500"}
+	cr := consul.NewRegistry(func(op *registry.Options) {
+		op.Addrs = url
+	})
 	service := micro.NewService(
 		micro.Name("go.micro.srv.send"),
 		micro.RegisterTTL(time.Second*3),

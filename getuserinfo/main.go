@@ -2,20 +2,27 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	pb "go-micro-sentinel/getuserinfo/proto"
 	start "go-micro-sentinel/server/proto"
 
-	sentinel "go-micro-sentinel/sentinel"
+	sentinelGo "go-micro-sentinel/sentinel"
 
 	"log"
 	"time"
 
-	"github.com/micro/go-micro"
-	"github.com/micro/go-micro/client"
-	"github.com/micro/go-micro/registry"
-	"github.com/micro/go-plugins/registry/consul"
+	"github.com/alibaba/sentinel-golang/core/base"
+	"github.com/micro/go-grpc/client"
+
+	"github.com/micro/go-micro/v2/server"
+
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-plugins/registry/consul/v2"
 )
+
+const FakeErrorMsg = "fake error for testing"
 
 type UserInfo struct {
 }
@@ -37,15 +44,24 @@ func (u *UserInfo) GetInfo(ctx context.Context, req *pb.GetRequest, rsp *pb.GetR
 }
 
 func main() {
-	sentinel.InitSentinelCircuitBreaking()
-	cr := consul.NewRegistry(registry.Addrs("47.115.20.3:8500"))
+	url := []string{"47.115.20.3:8500"}
+	cr := consul.NewRegistry(func(op *registry.Options) {
+		op.Addrs = url
+	})
 	service := micro.NewService(
 		micro.Name("go.micro.srv.getuserinfo"),
 		micro.RegisterTTL(time.Second*3),
 		micro.RegisterInterval(time.Second*3),
 		micro.Registry(cr),
-		micro.WrapHandler(sentinel.NewSentinelHandlerWrapper()),
+		micro.WrapHandler(sentinelGo.NewHandlerWrapper(
+			// add custom fallback function to return a fake error for assertion
+			sentinelGo.WithServerBlockFallback(
+				func(ctx context.Context, request server.Request, blockError *base.BlockError) error {
+					return errors.New(FakeErrorMsg)
+				}),
+		)),
 	)
+
 	service.Init()
 
 	cl = start.NewStartService("go.micro.srv.send", client.DefaultClient)
