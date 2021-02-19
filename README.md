@@ -1,12 +1,13 @@
 基于go micro框架简单实现sentinel模块的流控和熔断实例
-### tips
-micro 升级到了v2，为了和sentinel-go-adapters兼容
+
 
 ## 依赖
-* go-micro v1.18
+* go-micro 
 * protoc、protoc-gen-go、protoc-gen-micro
 * sentinel
 * consul
+##### tips
+micro 升级到了v2，为了和sentinel-go-adapters兼容
 
 #### 生成接口文件
 普通：
