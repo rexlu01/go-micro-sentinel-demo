@@ -45,6 +45,9 @@ func main() {
 		op.Addrs = url
 	})
 
+	//初始化
+	sentinelGo.InitSentinel()
+
 	service := micro.NewService(
 		micro.Address("localhost:56436"),
 		micro.Name("sentinel.test.server"),
