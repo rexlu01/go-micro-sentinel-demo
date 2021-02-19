@@ -45,12 +45,15 @@ func main() {
 		op.Addrs = url
 	})
 
-	//初始化
-	sentinelGo.InitSentinel()
+	//初始化流控
+	//	sentinelGo.Initflow()
+
+	//初始化熔断
+	sentinelGo.Initcircuitbreaker()
 
 	service := micro.NewService(
 		micro.Address("localhost:56436"),
-		micro.Name("sentinel.test.server"),
+		micro.Name("go.micro.srv.getuserinfo"),
 		micro.Version("latest"),
 		micro.Registry(cr),
 		micro.WrapHandler(sentinelGo.NewHandlerWrapper(

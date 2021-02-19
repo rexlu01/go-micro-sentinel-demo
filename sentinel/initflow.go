@@ -8,7 +8,7 @@ import (
 	"github.com/alibaba/sentinel-golang/core/flow"
 )
 
-func InitSentinel() {
+func Initflow() {
 	err := sentinel.InitDefault()
 	if err != nil {
 		log.Fatalf("Unexpected error: %+v", err)
