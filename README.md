@@ -1,5 +1,6 @@
 基于go micro框架简单实现sentinel模块的流控和熔断实例
-tips:感觉熔断写的不太对，这两天改 20210215
+### tips
+micro 升级到了v2，为了和sentinel-go-adapters兼容
 
 ## 依赖
 * go-micro v1.18
