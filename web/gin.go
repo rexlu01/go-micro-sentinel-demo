@@ -8,11 +8,11 @@ import (
 	pb "go-micro-sentinel/getuserinfo/proto"
 
 	"github.com/gin-gonic/gin"
-	"github.com/micro/go-micro/client"
-	"github.com/micro/go-micro/web"
+	"github.com/micro/go-micro/v2/client"
+	"github.com/micro/go-micro/v2/web"
 
-	"github.com/micro/go-micro/registry"
-	"github.com/micro/go-plugins/registry/consul"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-plugins/registry/consul/v2"
 )
 
 type UserInfo struct {
@@ -45,8 +45,10 @@ func (g *UserInfo) GetInfo(c *gin.Context) {
 }
 
 func main() {
-
-	cr := consul.NewRegistry(registry.Addrs("47.115.20.3:8500"))
+	url := []string{"47.115.20.3:8500"}
+	cr := consul.NewRegistry(func(op *registry.Options) {
+		op.Addrs = url
+	})
 	service := web.NewService(
 		web.Name("go.micro.api.sendmessage"),
 		web.Registry(cr),

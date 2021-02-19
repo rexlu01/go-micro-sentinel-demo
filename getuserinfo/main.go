@@ -4,20 +4,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	sentinelGo "go-micro-sentinel/sentinel"
+	"log"
+
 	pb "go-micro-sentinel/getuserinfo/proto"
 	start "go-micro-sentinel/server/proto"
 
-	sentinelGo "go-micro-sentinel/sentinel"
-
-	"log"
-	"time"
-
 	"github.com/alibaba/sentinel-golang/core/base"
-	"github.com/micro/go-grpc/client"
-
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/server"
 
-	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-plugins/registry/consul/v2"
 )
@@ -38,7 +35,6 @@ func (u *UserInfo) GetInfo(ctx context.Context, req *pb.GetRequest, rsp *pb.GetR
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	rsp.Msg = "this GetInfo respones " + res.Msg
 	return nil
 }
@@ -48,10 +44,11 @@ func main() {
 	cr := consul.NewRegistry(func(op *registry.Options) {
 		op.Addrs = url
 	})
+
 	service := micro.NewService(
-		micro.Name("go.micro.srv.getuserinfo"),
-		micro.RegisterTTL(time.Second*3),
-		micro.RegisterInterval(time.Second*3),
+		micro.Address("localhost:56436"),
+		micro.Name("sentinel.test.server"),
+		micro.Version("latest"),
 		micro.Registry(cr),
 		micro.WrapHandler(sentinelGo.NewHandlerWrapper(
 			// add custom fallback function to return a fake error for assertion
